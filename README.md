@@ -156,9 +156,17 @@ docker compose logs api-gateway
 
 An API Gateway gives clients one public entry point, hides internal service locations, and centralizes cross-cutting behavior such as logging and failure responses. Static configuration is simple and works for a small known deployment, but it needs a redeploy/restart when locations change. Dynamic discovery (such as Consul, Eureka, or Kubernetes DNS) can register instances automatically, track health, and route around failed or scaled instances.
 
-### Cloud deployment plan - Render
+### Cloud deployment - Render
 
-Deploy the gateway and three services as four Docker services on Render. Set the three service URLs and port values as Render environment variables; use each service's internal Render URL rather than `localhost`. Deploy the gateway as the only public web service, then set the Postman collection's `gatewayUrl` to its generated public URL and rerun `/health`, `/users`, `/products`, and `/orders`. No public URL is recorded here because no cloud account credentials or deployment authority were supplied.
+`render.yaml` is a Render Blueprint. It deploys the API Gateway as the only public web service and User, Product, and Order as Render private services in Singapore. It obtains each private service's internal `hostport` through Blueprint `fromService` references; the gateway code turns that value into an HTTP URL at runtime. No service address, credential, or public URL is committed.
+
+1. Create a Render account and connect GitHub.
+2. In Render, select **New > Blueprint**, select this `campus_connect` repository and the `main` branch, then use `render.yaml`.
+3. Review the four services. The Gateway uses Render's Free plan; the three private services use the `0.5c-512mb` plan. Confirm the associated charges before applying.
+4. Apply the Blueprint and wait for all services to become live. Render supplies the gateway's public `onrender.com` URL; private services do not receive public URLs.
+5. Set the `gatewayUrl` Postman collection variable to `https://<gateway-name>.onrender.com`, then run `/health`, `/users`, `/products`, and `/orders`.
+
+If you later add MongoDB Atlas persistence to every microservice, add each service's connection string in the Render dashboard as a secret environment variable - never commit it to `render.yaml`.
 
 Compared with Lab 6, clients no longer need to know individual service ports. Operational concerns are collected at the gateway, while services stay private. Configuration makes endpoint locations replaceable without routing-code changes. Cloud deployment moves the public entry point beyond the local machine, which requires environment configuration and platform monitoring. The gateway makes client testing simpler, but its availability becomes important to the whole system.
 

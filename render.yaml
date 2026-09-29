@@ -1,0 +1,68 @@
+services:
+  - type: web
+    name: campusconnect-api-gateway
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: microservices/api-gateway/Dockerfile
+    dockerContext: microservices/api-gateway
+    healthCheckPath: /health
+    envVars:
+      - key: USER_SERVICE_URL
+        fromService:
+          type: pserv
+          name: campusconnect-user-service
+          property: hostport
+      - key: PRODUCT_SERVICE_URL
+        fromService:
+          type: pserv
+          name: campusconnect-product-service
+          property: hostport
+      - key: ORDER_SERVICE_URL
+        fromService:
+          type: pserv
+          name: campusconnect-order-service
+          property: hostport
+
+  - type: pserv
+    name: campusconnect-user-service
+    runtime: docker
+    plan: 0.5c-512mb
+    region: singapore
+    dockerfilePath: microservices/user-service/Dockerfile
+    dockerContext: microservices/user-service
+    envVars:
+      - key: USER_SERVICE_PORT
+        value: "3001"
+
+  - type: pserv
+    name: campusconnect-product-service
+    runtime: docker
+    plan: 0.5c-512mb
+    region: singapore
+    dockerfilePath: microservices/product-service/Dockerfile
+    dockerContext: microservices/product-service
+    envVars:
+      - key: PRODUCT_SERVICE_PORT
+        value: "3002"
+
+  - type: pserv
+    name: campusconnect-order-service
+    runtime: docker
+    plan: 0.5c-512mb
+    region: singapore
+    dockerfilePath: microservices/order-service/Dockerfile
+    dockerContext: microservices/order-service
+    envVars:
+      - key: ORDER_SERVICE_PORT
+        value: "3003"
+      - key: USER_SERVICE_URL
+        fromService:
+          type: pserv
+          name: campusconnect-user-service
+          property: hostport
+      - key: PRODUCT_SERVICE_URL
+        fromService:
+          type: pserv
+          name: campusconnect-product-service
+          property: hostport

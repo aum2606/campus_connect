@@ -1,8 +1,12 @@
 const http = require('node:http');
 
 const port = Number(process.env.ORDER_SERVICE_PORT) || 3003;
-const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:3001';
-const productServiceUrl = process.env.PRODUCT_SERVICE_URL || 'http://localhost:3002';
+function serviceUrl(value, fallback) {
+  const url = value || fallback;
+  return url.startsWith('http://') || url.startsWith('https://') ? url : `http://${url}`;
+}
+const userServiceUrl = serviceUrl(process.env.USER_SERVICE_URL, 'http://localhost:3001');
+const productServiceUrl = serviceUrl(process.env.PRODUCT_SERVICE_URL, 'http://localhost:3002');
 let orders = [];
 let nextId = 1;
 

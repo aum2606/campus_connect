@@ -8,4 +8,8 @@ for (const service of serviceRegistry) {
   if (!service.url) throw new Error(`${service.name.toUpperCase().replaceAll(' ', '_')}_URL is required.`);
 }
 
-module.exports = { port: Number(process.env.GATEWAY_PORT) || 8080, serviceRegistry };
+for (const service of serviceRegistry) {
+  if (!service.url.startsWith('http://') && !service.url.startsWith('https://')) service.url = `http://${service.url}`;
+}
+
+module.exports = { port: Number(process.env.PORT || process.env.GATEWAY_PORT) || 8080, serviceRegistry };
