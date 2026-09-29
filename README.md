@@ -121,12 +121,46 @@ Postman -> User Service (:3001)
 Each service owns its resource data: Users, Products, or Orders. The Order Service does not access another service's data directly; it validates IDs with `GET http://user-service:3001/users/{id}` and `GET http://product-service:3002/products/{id}` over the Docker network. `USER_SERVICE_URL` and `PRODUCT_SERVICE_URL` are Compose environment variables, never `localhost` inside a container.
 
 ```sh
-docker compose up --build -d
-docker compose ps
-docker compose logs
+docker compose -f compose.lab6.yaml up --build -d
+docker compose -f compose.lab6.yaml ps
+docker compose -f compose.lab6.yaml logs
 ```
 
 Use `postman/Microservices-Lab-6.postman_collection.json` to test User, Product, and Order endpoints. `POST /orders` with user `101` and product `501` returns 201. A missing referenced resource returns 404; if User or Product Service is stopped, the same request returns 503. Restart that service and retry to verify recovery.
+
+## Lab 7 API Gateway, discovery, and cloud deployment
+
+```
+Client / Postman (Internet)
+           |
+   API Gateway (:8080, public)
+           |
+      campus-network
+  /--------|--------\
+User     Product    Order
+Service  Service    Service
+```
+
+Lab 7 exposes only the API Gateway. User, Product, and Order have no host port mappings and remain reachable only on `campus-network`. The gateway routes `/users`, `/products`, and `/orders`, logs the method/path/target/status, returns `GET /health` itself, and responds with 502 when a target is unavailable.
+
+Service discovery is configuration-based: `USER_SERVICE_URL`, `PRODUCT_SERVICE_URL`, and `ORDER_SERVICE_URL` are injected by `compose.yaml` and read by `microservices/api-gateway/config.js`. The route handler only reads the resulting registry. To prove this, change a service URL or port in Compose, run `docker compose up --build -d`, and test the same gateway path - no gateway code changes are required.
+
+```sh
+docker compose up --build -d
+curl http://localhost:8080/health
+curl http://localhost:8080/users
+docker compose logs api-gateway
+```
+
+`postman/API-Gateway-Lab-7.postman_collection.json` tests the health check and all routed resource families. Stop a target service with `docker compose stop user-service`, then request `http://localhost:8080/users` to verify the gateway's 502 response; restart it with `docker compose start user-service`.
+
+An API Gateway gives clients one public entry point, hides internal service locations, and centralizes cross-cutting behavior such as logging and failure responses. Static configuration is simple and works for a small known deployment, but it needs a redeploy/restart when locations change. Dynamic discovery (such as Consul, Eureka, or Kubernetes DNS) can register instances automatically, track health, and route around failed or scaled instances.
+
+### Cloud deployment plan - Render
+
+Deploy the gateway and three services as four Docker services on Render. Set the three service URLs and port values as Render environment variables; use each service's internal Render URL rather than `localhost`. Deploy the gateway as the only public web service, then set the Postman collection's `gatewayUrl` to its generated public URL and rerun `/health`, `/users`, `/products`, and `/orders`. No public URL is recorded here because no cloud account credentials or deployment authority were supplied.
+
+Compared with Lab 6, clients no longer need to know individual service ports. Operational concerns are collected at the gateway, while services stay private. Configuration makes endpoint locations replaceable without routing-code changes. Cloud deployment moves the public entry point beyond the local machine, which requires environment configuration and platform monitoring. The gateway makes client testing simpler, but its availability becomes important to the whole system.
 
 ## Future service mapping
 

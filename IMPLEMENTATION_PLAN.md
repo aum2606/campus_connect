@@ -10,3 +10,5 @@ Each lab is one gated phase. I will commit the completed phase and wait for revi
 6. **Phase 6 - Lab 6:** Split the backend into User, Product, and Order services with Docker networking, service-to-service validation, and Compose orchestration. **Complete - awaiting review.**
 
 Labs 7 and 8 are explicitly out of scope.
+
+7. **Phase 7 - Lab 7:** Scope expanded by user request. Add an API Gateway with configuration-based service discovery and cloud deployment guidance. **Complete locally - awaiting review and cloud account access.**

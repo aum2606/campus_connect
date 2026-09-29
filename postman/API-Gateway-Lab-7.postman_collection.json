@@ -1,0 +1,10 @@
+{
+  "info": { "name": "API Gateway - Lab 7", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+  "variable": [{ "key": "gatewayUrl", "value": "http://localhost:8080" }],
+  "item": [
+    { "name": "Gateway Health", "request": { "method": "GET", "url": "{{gatewayUrl}}/health" } },
+    { "name": "Gateway Users", "request": { "method": "GET", "url": "{{gatewayUrl}}/users" } },
+    { "name": "Gateway Products", "request": { "method": "GET", "url": "{{gatewayUrl}}/products" } },
+    { "name": "Gateway Create Order", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"userId\": \"101\",\n  \"productId\": \"501\",\n  \"quantity\": 1\n}" }, "url": "{{gatewayUrl}}/orders" } }
+  ]
+}
