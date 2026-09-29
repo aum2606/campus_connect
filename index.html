@@ -52,13 +52,12 @@
           </ul>
         </section>
 
-        <section id="profile" class="panel" aria-labelledby="profile-title">
+      <section id="profile" class="panel" aria-labelledby="profile-title">
           <h2 id="profile-title">Student profile</h2>
-          <dl class="profile-list">
-            <div><dt>Email</dt><dd>aarav.patel@campus.edu</dd></div>
-            <div><dt>Phone</dt><dd>+91 98765 43210</dd></div>
-            <div><dt>Advisor</dt><dd>Dr. Mehta</dd></div>
+          <dl id="profile-details" class="profile-list" aria-live="polite">
+            <div><dt>Status</dt><dd>Loading profile...</dd></div>
           </dl>
+          <p id="profile-error" class="error-state" hidden></p>
         </section>
       </div>
 
@@ -69,12 +68,19 @@
             <input id="announcement-search" type="search" placeholder="Search" />
           </label>
         </div>
-        <div id="announcement-list" class="announcement-list">
-          <article class="announcement"><h3>Web Services lab submission</h3><p>Submit Lab 1 by Friday, 5 PM.</p></article>
-          <article class="announcement"><h3>Library extended hours</h3><p>The library will remain open until 9 PM during exams.</p></article>
-          <article class="announcement"><h3>Semester registration</h3><p>Course registration opens next Monday.</p></article>
+        <div id="announcement-list" class="announcement-list" aria-live="polite">
+          <p class="loading-state">Loading announcements...</p>
         </div>
         <p id="no-announcements" class="empty-state" hidden>No announcements match your search.</p>
+        <p id="announcements-error" class="error-state" hidden></p>
+      </section>
+
+      <section class="panel" aria-labelledby="assignments-title">
+        <h2 id="assignments-title">Assignments</h2>
+        <ul id="assignment-list" class="assignment-list" aria-live="polite">
+          <li class="loading-state">Loading assignments...</li>
+        </ul>
+        <p id="assignments-error" class="error-state" hidden></p>
       </section>
 
       <section class="panel" aria-labelledby="events-title">

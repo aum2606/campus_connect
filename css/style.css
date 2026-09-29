@@ -59,7 +59,11 @@ input { display: block; width: 100%; margin-top: .25rem; padding: .4rem .6rem; b
 .event-grid strong { color: var(--primary); }
 .service-grid { grid-template-columns: repeat(3, 1fr); }
 .service-grid a { padding: .8rem; border-radius: .5rem; background: color-mix(in srgb, var(--primary) 10%, var(--surface)); color: var(--primary); font-weight: 700; text-align: center; text-decoration: none; }
-.empty-state { color: var(--muted); }
+.empty-state, .loading-state { color: var(--muted); }
+.error-state { color: #c42b42; }
+.assignment-list { display: grid; gap: .65rem; margin: 0; padding: 0; list-style: none; }
+.assignment-list li { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .75rem 0; border-top: 1px solid var(--border); }
+.assignment-status { flex: 0 0 auto; border-radius: 99px; padding: .2rem .55rem; background: color-mix(in srgb, var(--primary) 12%, var(--surface)); color: var(--primary); font-size: .8rem; font-weight: 700; }
 footer { justify-content: center; flex-wrap: wrap; border-top: 1px solid var(--border); font-size: .9rem; }
 
 @media (max-width: 760px) {
