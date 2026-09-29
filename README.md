@@ -90,6 +90,24 @@ Open `android-student-client/` in Android Studio and run it on an emulator. `Mai
 
 React and Android call REST rather than MongoDB directly so database credentials and validation stay on the server, client applications are not coupled to MongoDB, and the database can later change without rewriting both clients. Both clients use the same HTTP/JSON resource contract; React handles browser CORS and its development URL, while Android uses Retrofit, an emulator host address, and Toast feedback.
 
+## Lab 5 Docker and containerization
+
+Lab 5 packages the Express Student API and MongoDB as separate containers. The API uses `mongodb` - the Compose service name - rather than `localhost` to reach MongoDB inside the Docker network.
+
+```sh
+# Build and start both services
+docker compose up --build -d
+
+# Verify containers and test http://localhost:3000/students in Postman
+docker compose ps
+docker compose logs api
+
+# Stop containers but retain student-mongo-data for the persistence test
+docker compose down
+```
+
+`backend/Dockerfile` builds the API image. `compose.yaml` injects `PORT`, `MONGO_URI`, and `CORS_ORIGIN`, creates the `student-network`, and mounts the named `student-mongo-data` volume at MongoDB's `/data/db`. To prove persistence, create a Student through the API, run `docker compose down`, run `docker compose up -d`, then request `GET /students` again. Do not append `-v` to `docker compose down` when demonstrating persistence.
+
 ## Future service mapping
 
 | UI component | Future API |
