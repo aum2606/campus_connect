@@ -95,18 +95,38 @@ React and Android call REST rather than MongoDB directly so database credentials
 Lab 5 packages the Express Student API and MongoDB as separate containers. The API uses `mongodb` - the Compose service name - rather than `localhost` to reach MongoDB inside the Docker network.
 
 ```sh
-# Build and start both services
-docker compose up --build -d
+# Build and start both Lab 5 services
+docker compose -f compose.lab5.yaml up --build -d
 
 # Verify containers and test http://localhost:3000/students in Postman
-docker compose ps
-docker compose logs api
+docker compose -f compose.lab5.yaml ps
+docker compose -f compose.lab5.yaml logs api
 
 # Stop containers but retain student-mongo-data for the persistence test
-docker compose down
+docker compose -f compose.lab5.yaml down
 ```
 
-`backend/Dockerfile` builds the API image. `compose.yaml` injects `PORT`, `MONGO_URI`, and `CORS_ORIGIN`, creates the `student-network`, and mounts the named `student-mongo-data` volume at MongoDB's `/data/db`. To prove persistence, create a Student through the API, run `docker compose down`, run `docker compose up -d`, then request `GET /students` again. Do not append `-v` to `docker compose down` when demonstrating persistence.
+`backend/Dockerfile` builds the API image. `compose.lab5.yaml` injects `PORT`, `MONGO_URI`, and `CORS_ORIGIN`, creates the `student-network`, and mounts the named `student-mongo-data` volume at MongoDB's `/data/db`. To prove persistence, create a Student through the API, run `docker compose -f compose.lab5.yaml down`, run it again with `up -d`, then request `GET /students` again. Do not append `-v` to `down` when demonstrating persistence.
+
+## Lab 6 microservices
+
+The default `compose.yaml` runs three independently runnable services on the `campus-network`:
+
+```
+Postman -> User Service (:3001)
+        -> Product Service (:3002)
+        -> Order Service (:3003) -> User Service / Product Service
+```
+
+Each service owns its resource data: Users, Products, or Orders. The Order Service does not access another service's data directly; it validates IDs with `GET http://user-service:3001/users/{id}` and `GET http://product-service:3002/products/{id}` over the Docker network. `USER_SERVICE_URL` and `PRODUCT_SERVICE_URL` are Compose environment variables, never `localhost` inside a container.
+
+```sh
+docker compose up --build -d
+docker compose ps
+docker compose logs
+```
+
+Use `postman/Microservices-Lab-6.postman_collection.json` to test User, Product, and Order endpoints. `POST /orders` with user `101` and product `501` returns 201. A missing referenced resource returns 404; if User or Product Service is stopped, the same request returns 503. Restart that service and retry to verify recovery.
 
 ## Future service mapping
 
