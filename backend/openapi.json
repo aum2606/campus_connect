@@ -8,7 +8,7 @@
       "post": { "summary": "Create a student", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StudentInput" } } } }, "responses": { "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Student" } } } }, "400": { "$ref": "#/components/responses/ValidationError" }, "500": { "$ref": "#/components/responses/ServerError" } } }
     },
     "/students/{id}": {
-      "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer", "minimum": 1 } }],
+      "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string", "description": "MongoDB Student identifier" } }],
       "get": { "summary": "Get one student", "responses": { "200": { "description": "Student", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Student" } } } }, "404": { "$ref": "#/components/responses/NotFound" }, "500": { "$ref": "#/components/responses/ServerError" } } },
       "put": { "summary": "Replace a student", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StudentInput" } } } }, "responses": { "200": { "description": "Updated student", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Student" } } } }, "400": { "$ref": "#/components/responses/ValidationError" }, "404": { "$ref": "#/components/responses/NotFound" }, "500": { "$ref": "#/components/responses/ServerError" } } },
       "delete": { "summary": "Delete a student", "responses": { "204": { "description": "Deleted" }, "404": { "$ref": "#/components/responses/NotFound" }, "500": { "$ref": "#/components/responses/ServerError" } } }
@@ -16,7 +16,7 @@
   },
   "components": {
     "schemas": {
-      "Student": { "allOf": [{ "$ref": "#/components/schemas/StudentInput" }, { "type": "object", "required": ["id"], "properties": { "id": { "type": "integer", "example": 1 } } }] },
+      "Student": { "allOf": [{ "$ref": "#/components/schemas/StudentInput" }, { "type": "object", "required": ["id"], "properties": { "id": { "type": "string", "example": "68c70d9eabbaf3e713915213" } } }] },
       "StudentInput": { "type": "object", "required": ["name", "email", "course", "semester"], "properties": { "name": { "type": "string", "example": "Aarav Patel" }, "email": { "type": "string", "format": "email", "example": "aarav@example.com" }, "course": { "type": "string", "example": "Computer Science" }, "semester": { "type": "integer", "minimum": 1, "example": 5 } } },
       "Error": { "type": "object", "required": ["error"], "properties": { "error": { "type": "string" }, "details": { "type": "object", "additionalProperties": { "type": "string" } } } }
     },

@@ -1,0 +1,8 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="16dp">
+    <EditText android:id="@+id/name" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Name" />
+    <EditText android:id="@+id/email" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Email" android:inputType="textEmailAddress" />
+    <EditText android:id="@+id/course" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Course" />
+    <EditText android:id="@+id/semester" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Semester" android:inputType="number" />
+    <Button android:id="@+id/addStudent" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Add Student" />
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/studentList" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="16dp" />
+</LinearLayout>

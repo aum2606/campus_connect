@@ -4,3 +4,10 @@ all labs/
 backend/node_modules/
 backend/.env
 spring-student-api/target/
+student-client/node_modules/
+student-client/dist/
+student-client/.env
+android-student-client/.gradle/
+android-student-client/build/
+android-student-client/app/build/
+android-student-client/local.properties
