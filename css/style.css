@@ -1,0 +1,72 @@
+:root {
+  --page: #f4f7fb;
+  --surface: #ffffff;
+  --text: #172033;
+  --muted: #667085;
+  --primary: #3659d9;
+  --border: #e4e8f0;
+  --shadow: 0 10px 30px rgba(27, 47, 91, 0.08);
+}
+
+body.dark {
+  --page: #111827;
+  --surface: #1f2937;
+  --text: #f8fafc;
+  --muted: #c1cad8;
+  --primary: #8ea5ff;
+  --border: #374151;
+  --shadow: none;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--text); font: 16px/1.5 Arial, sans-serif; }
+a { color: inherit; }
+.site-header, footer { display: flex; align-items: center; gap: 1.25rem; padding: 1rem max(5vw, 1.5rem); background: var(--surface); }
+.site-header { border-bottom: 1px solid var(--border); }
+.brand { color: var(--primary); font-size: 1.25rem; font-weight: 800; text-decoration: none; }
+nav { display: flex; flex: 1; flex-wrap: wrap; gap: 1rem; }
+nav a, footer a { color: var(--muted); text-decoration: none; }
+#notification-count { display: inline-grid; place-items: center; min-width: 1.25rem; border-radius: 99px; background: var(--primary); color: white; font-size: .75rem; }
+.theme-toggle { border: 1px solid var(--border); border-radius: .5rem; background: transparent; color: var(--text); cursor: pointer; padding: .45rem .75rem; }
+.page-shell { max-width: 1120px; margin: auto; padding: 2rem 1.25rem 3rem; }
+.welcome { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 2rem; }
+h1, h2, h3, p { margin-top: 0; }
+h1 { margin-bottom: .25rem; font-size: clamp(2rem, 4vw, 3rem); }
+h2 { font-size: 1.1rem; }
+.eyebrow, .welcome p, time, small, .profile-list dt { color: var(--muted); }
+.summary-grid, .event-grid, .service-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; }
+.summary-grid article, .panel { border: 1px solid var(--border); border-radius: .8rem; background: var(--surface); box-shadow: var(--shadow); }
+.summary-grid article { display: grid; gap: .25rem; min-height: 95px; padding: 1rem; }
+.summary-grid span { color: var(--muted); font-size: .85rem; }
+.summary-grid strong { color: var(--primary); font-size: 1.45rem; }
+.content-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 1rem; margin: 1rem 0; }
+.panel { margin-top: 1rem; padding: 1.25rem; }
+.content-grid .panel { margin-top: 0; }
+.schedule-list, .profile-list { margin: 0; padding: 0; list-style: none; }
+.schedule-list li { display: grid; grid-template-columns: 4.5rem 1fr auto; gap: .5rem; padding: .75rem 0; border-top: 1px solid var(--border); }
+.profile-list div { padding: .55rem 0; border-top: 1px solid var(--border); }
+.profile-list dt, .profile-list dd { display: inline; margin: 0; }
+.profile-list dt::after { content: ': '; }
+.section-heading { display: flex; justify-content: space-between; gap: 1rem; }
+.search-label { color: var(--muted); font-size: .85rem; }
+input { display: block; width: 100%; margin-top: .25rem; padding: .4rem .6rem; border: 1px solid var(--border); border-radius: .35rem; background: var(--page); color: var(--text); }
+.announcement-list { display: grid; gap: .75rem; }
+.announcement { padding: .8rem 0 0; border-top: 1px solid var(--border); }
+.announcement h3 { margin-bottom: .2rem; font-size: 1rem; }
+.announcement p { margin-bottom: 0; color: var(--muted); }
+.event-grid { grid-template-columns: repeat(3, 1fr); }
+.event-grid article { display: grid; gap: .4rem; }
+.event-grid strong { color: var(--primary); }
+.service-grid { grid-template-columns: repeat(3, 1fr); }
+.service-grid a { padding: .8rem; border-radius: .5rem; background: color-mix(in srgb, var(--primary) 10%, var(--surface)); color: var(--primary); font-weight: 700; text-align: center; text-decoration: none; }
+.empty-state { color: var(--muted); }
+footer { justify-content: center; flex-wrap: wrap; border-top: 1px solid var(--border); font-size: .9rem; }
+
+@media (max-width: 760px) {
+  .site-header, .welcome, .section-heading { align-items: start; flex-direction: column; }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .content-grid { grid-template-columns: 1fr; }
+  .event-grid, .service-grid { grid-template-columns: 1fr; }
+  .schedule-list li { grid-template-columns: 4.5rem 1fr; }
+  .schedule-list small { grid-column: 2; }
+}

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="CampusConnect student service portal" />
+    <title>CampusConnect</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#home" aria-label="CampusConnect home">CampusConnect</a>
+      <nav aria-label="Primary navigation">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#notifications">Notifications <span id="notification-count">3</span></a>
+        <a href="#profile">Profile</a>
+      </nav>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle colour theme">Theme</button>
+    </header>
+
+    <main id="home" class="page-shell">
+      <section class="welcome" aria-labelledby="welcome-title">
+        <div>
+          <p id="greeting" class="eyebrow"></p>
+          <h1 id="welcome-title">Aarav Patel</h1>
+          <p>Student ID: CC2025001 · Computer Science · Semester 5</p>
+        </div>
+        <time id="current-date" aria-live="polite"></time>
+      </section>
+
+      <section id="dashboard" aria-labelledby="summary-title">
+        <h2 id="summary-title">Academic overview</h2>
+        <div class="summary-grid">
+          <article><span>Attendance</span><strong>92%</strong></article>
+          <article><span>Courses</span><strong>5</strong></article>
+          <article><span>Assignments</span><strong>3</strong></article>
+          <article><span>Exams</span><strong>2</strong></article>
+          <article><span>CGPA</span><strong>8.6</strong></article>
+          <article id="notifications"><span>Notifications</span><strong>3</strong></article>
+        </div>
+      </section>
+
+      <div class="content-grid">
+        <section class="panel" aria-labelledby="timetable-title">
+          <h2 id="timetable-title">Today's timetable</h2>
+          <ul class="schedule-list">
+            <li><time>09:00</time><span>Web Services</span><small>Lab 204</small></li>
+            <li><time>11:00</time><span>Database Systems</span><small>Room 301</small></li>
+            <li><time>14:00</time><span>Software Engineering</span><small>Room 115</small></li>
+          </ul>
+        </section>
+
+        <section id="profile" class="panel" aria-labelledby="profile-title">
+          <h2 id="profile-title">Student profile</h2>
+          <dl class="profile-list">
+            <div><dt>Email</dt><dd>aarav.patel@campus.edu</dd></div>
+            <div><dt>Phone</dt><dd>+91 98765 43210</dd></div>
+            <div><dt>Advisor</dt><dd>Dr. Mehta</dd></div>
+          </dl>
+        </section>
+      </div>
+
+      <section class="panel" aria-labelledby="announcements-title">
+        <div class="section-heading">
+          <h2 id="announcements-title">Recent announcements</h2>
+          <label class="search-label">Search announcements
+            <input id="announcement-search" type="search" placeholder="Search" />
+          </label>
+        </div>
+        <div id="announcement-list" class="announcement-list">
+          <article class="announcement"><h3>Web Services lab submission</h3><p>Submit Lab 1 by Friday, 5 PM.</p></article>
+          <article class="announcement"><h3>Library extended hours</h3><p>The library will remain open until 9 PM during exams.</p></article>
+          <article class="announcement"><h3>Semester registration</h3><p>Course registration opens next Monday.</p></article>
+        </div>
+        <p id="no-announcements" class="empty-state" hidden>No announcements match your search.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="events-title">
+        <h2 id="events-title">Upcoming events</h2>
+        <div class="event-grid">
+          <article><strong>12 Oct</strong><span>Tech Talk: Building REST APIs</span></article>
+          <article><strong>18 Oct</strong><span>Campus coding challenge</span></article>
+          <article><strong>24 Oct</strong><span>Career guidance workshop</span></article>
+        </div>
+      </section>
+
+      <section id="services" class="panel" aria-labelledby="services-title">
+        <h2 id="services-title">Quick services</h2>
+        <div class="service-grid">
+          <a href="#dashboard">Attendance</a><a href="#dashboard">Registration</a><a href="#dashboard">Fee payment</a>
+          <a href="#profile">Transcript</a><a href="#dashboard">Library</a><a href="#dashboard">Timetable</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>CampusConnect</span>
+      <a href="mailto:help@campusconnect.edu">Contact & Help Desk</a>
+      <a href="#privacy">Privacy Policy</a>
+    </footer>
+    <script src="js/script.js"></script>
+  </body>
+</html>
