@@ -1,0 +1,16 @@
+{
+  "info": {
+    "name": "RESTful Web Services - Lab 3",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [{ "key": "baseUrl", "value": "http://localhost:3000" }],
+  "item": [
+    { "name": "List Students", "request": { "method": "GET", "url": "{{baseUrl}}/students" } },
+    { "name": "Get Student", "request": { "method": "GET", "url": "{{baseUrl}}/students/1" } },
+    { "name": "Create Student", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Maya Shah\",\n  \"email\": \"maya@example.com\",\n  \"course\": \"Information Technology\",\n  \"semester\": 4\n}" }, "url": "{{baseUrl}}/students" } },
+    { "name": "Update Student", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Aarav Patel\",\n  \"email\": \"aarav@example.com\",\n  \"course\": \"Computer Science\",\n  \"semester\": 6\n}" }, "url": "{{baseUrl}}/students/1" } },
+    { "name": "Delete Student", "request": { "method": "DELETE", "url": "{{baseUrl}}/students/1" } },
+    { "name": "Invalid Student Body", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"\",\n  \"email\": \"invalid-email\",\n  \"semester\": -2\n}" }, "url": "{{baseUrl}}/students" } },
+    { "name": "Missing Student", "request": { "method": "GET", "url": "{{baseUrl}}/students/999" } }
+  ]
+}

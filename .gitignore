@@ -1,4 +1,6 @@
 node_modules/
 .env
 all labs/
-
+backend/node_modules/
+backend/.env
+spring-student-api/target/

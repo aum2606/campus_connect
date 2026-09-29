@@ -1,0 +1,29 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "CampusConnect Student API", "version": "1.0.0", "description": "In-memory Student CRUD API for Lab 3." },
+  "servers": [{ "url": "http://localhost:3000" }],
+  "paths": {
+    "/students": {
+      "get": { "summary": "List students", "responses": { "200": { "description": "Student list", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Student" } } } } }, "500": { "$ref": "#/components/responses/ServerError" } } },
+      "post": { "summary": "Create a student", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StudentInput" } } } }, "responses": { "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Student" } } } }, "400": { "$ref": "#/components/responses/ValidationError" }, "500": { "$ref": "#/components/responses/ServerError" } } }
+    },
+    "/students/{id}": {
+      "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer", "minimum": 1 } }],
+      "get": { "summary": "Get one student", "responses": { "200": { "description": "Student", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Student" } } } }, "404": { "$ref": "#/components/responses/NotFound" }, "500": { "$ref": "#/components/responses/ServerError" } } },
+      "put": { "summary": "Replace a student", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StudentInput" } } } }, "responses": { "200": { "description": "Updated student", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Student" } } } }, "400": { "$ref": "#/components/responses/ValidationError" }, "404": { "$ref": "#/components/responses/NotFound" }, "500": { "$ref": "#/components/responses/ServerError" } } },
+      "delete": { "summary": "Delete a student", "responses": { "204": { "description": "Deleted" }, "404": { "$ref": "#/components/responses/NotFound" }, "500": { "$ref": "#/components/responses/ServerError" } } }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Student": { "allOf": [{ "$ref": "#/components/schemas/StudentInput" }, { "type": "object", "required": ["id"], "properties": { "id": { "type": "integer", "example": 1 } } }] },
+      "StudentInput": { "type": "object", "required": ["name", "email", "course", "semester"], "properties": { "name": { "type": "string", "example": "Aarav Patel" }, "email": { "type": "string", "format": "email", "example": "aarav@example.com" }, "course": { "type": "string", "example": "Computer Science" }, "semester": { "type": "integer", "minimum": 1, "example": 5 } } },
+      "Error": { "type": "object", "required": ["error"], "properties": { "error": { "type": "string" }, "details": { "type": "object", "additionalProperties": { "type": "string" } } } }
+    },
+    "responses": {
+      "ValidationError": { "description": "Invalid or incomplete request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+      "NotFound": { "description": "Student not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+      "ServerError": { "description": "Unexpected server error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+    }
+  }
+}
