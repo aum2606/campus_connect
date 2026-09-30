@@ -168,6 +168,54 @@ An API Gateway gives clients one public entry point, hides internal service loca
 
 Render supplies the `PORT` environment variable to each free web service; the service code now uses it automatically. Free web services can sleep after inactivity, so the first request can take about a minute. If you later add MongoDB Atlas persistence, add its connection string only in the Render dashboard as a secret environment variable.
 
+## Lab 8 Kubernetes, CI, and monitoring
+
+Lab 8 continues the Lab 7 API Gateway, User, Product, and Order services. Each service now exposes Prometheus-format metrics at `/metrics`: request count, error count, and request duration.
+
+### Kubernetes deployment
+
+Use a Kubernetes cluster with `kubectl` configured. Docker Desktop Kubernetes is suitable for local use. Build the local images, then create and verify the `lab8` namespace:
+
+```sh
+docker build -t campusconnect-api-gateway:lab8 microservices/api-gateway
+docker build -t campusconnect-user-service:lab8 microservices/user-service
+docker build -t campusconnect-product-service:lab8 microservices/product-service
+docker build -t campusconnect-order-service:lab8 microservices/order-service
+
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/configmap.yaml -n lab8
+kubectl apply -f k8s/gateway-deployment.yaml -f k8s/gateway-service.yaml -n lab8
+kubectl apply -f k8s/user-deployment.yaml -f k8s/user-service.yaml -n lab8
+kubectl apply -f k8s/product-deployment.yaml -f k8s/product-service.yaml -n lab8
+kubectl apply -f k8s/order-deployment.yaml -f k8s/order-service.yaml -n lab8
+kubectl get deployments,pods,services -n lab8
+```
+
+Only `api-gateway` is a NodePort service (`30080`); the other services are `ClusterIP` and use stable Kubernetes Service names. If NodePort access is unavailable locally, use:
+
+```sh
+kubectl port-forward service/api-gateway 8080:8080 -n lab8
+```
+
+Test `http://localhost:8080/health`, `/users`, `/products`, and `/orders` through the gateway. Scale and self-heal verification:
+
+```sh
+kubectl scale deployment user-service --replicas=3 -n lab8
+kubectl get pods -n lab8
+kubectl delete pod <user-service-pod> -n lab8
+kubectl get pods -n lab8
+```
+
+`k8s/configmap.yaml` contains only non-sensitive URLs and ports. If MongoDB Atlas is connected to a service later, create a Kubernetes Secret locally and reference it from the affected Deployment; never commit the URI or credentials.
+
+### CI and monitoring
+
+`.github/workflows/ci.yml` runs the existing backend tests, checks every microservice source file, and builds all four Docker images for every push and pull request. It deliberately does not publish images because no registry credentials are committed.
+
+Install a Prometheus Operator-compatible stack in your selected cluster, then apply `monitoring/service-monitor.yaml` after the `ServiceMonitor` CRD exists. Import `monitoring/grafana-dashboard.json` into Grafana. The dashboard answers four monitoring questions: are targets up, how much traffic arrives, are errors increasing, and what is the average request duration? Generate gateway traffic, query `up{namespace="lab8"}` and `rate(campusconnect_http_requests_total[5m])`, then compare the Grafana panels before and after traffic.
+
+Useful troubleshooting commands are `kubectl describe pod <pod> -n lab8`, `kubectl logs <pod> -n lab8`, and `kubectl get endpoints -n lab8`. Capture the context/nodes, Kubernetes resources, gateway calls, scale/self-healing event, Actions run, Prometheus query, and Grafana dashboard for the Lab 8 evidence.
+
 Compared with Lab 6, clients no longer need to know individual service ports. Operational concerns are collected at the gateway, while services stay private. Configuration makes endpoint locations replaceable without routing-code changes. Cloud deployment moves the public entry point beyond the local machine, which requires environment configuration and platform monitoring. The gateway makes client testing simpler, but its availability becomes important to the whole system.
 
 ## Future service mapping

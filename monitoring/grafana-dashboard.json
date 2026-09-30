@@ -1,0 +1,27 @@
+{
+  "title": "CampusConnect Lab 8",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "title": "Service availability",
+      "type": "stat",
+      "targets": [{ "expr": "up{namespace=\"lab8\"}" }]
+    },
+    {
+      "title": "Request rate",
+      "type": "timeseries",
+      "targets": [{ "expr": "sum by (service) (rate(campusconnect_http_requests_total[5m]))" }]
+    },
+    {
+      "title": "Error rate",
+      "type": "timeseries",
+      "targets": [{ "expr": "sum by (service) (rate(campusconnect_http_errors_total[5m]))" }]
+    },
+    {
+      "title": "Average request duration",
+      "type": "timeseries",
+      "targets": [{ "expr": "sum by (service) (rate(campusconnect_http_request_duration_seconds_sum[5m])) / sum by (service) (rate(campusconnect_http_request_duration_seconds_count[5m]))" }]
+    }
+  ]
+}

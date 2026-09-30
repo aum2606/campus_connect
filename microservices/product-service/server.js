@@ -3,8 +3,16 @@ const http = require('node:http');
 const port = Number(process.env.PORT || process.env.PRODUCT_SERVICE_PORT) || 3002;
 let products = [{ id: '501', name: 'Campus Hoodie', price: 1299 }];
 let nextId = 502;
+const serviceName = 'product-service';
+let requestCount = 0;
+let errorCount = 0;
+let durationSeconds = 0;
 
 function send(res, status, body) { res.writeHead(status, { 'Content-Type': 'application/json' }); res.end(body === undefined ? '' : JSON.stringify(body)); }
+function sendMetrics(res) {
+  res.writeHead(200, { 'Content-Type': 'text/plain; version=0.0.4' });
+  res.end(`# HELP campusconnect_http_requests_total HTTP requests handled\n# TYPE campusconnect_http_requests_total counter\ncampusconnect_http_requests_total{service="${serviceName}"} ${requestCount}\n# HELP campusconnect_http_errors_total HTTP responses with status 400 or above\n# TYPE campusconnect_http_errors_total counter\ncampusconnect_http_errors_total{service="${serviceName}"} ${errorCount}\n# HELP campusconnect_http_request_duration_seconds Request duration\n# TYPE campusconnect_http_request_duration_seconds summary\ncampusconnect_http_request_duration_seconds_sum{service="${serviceName}"} ${durationSeconds}\ncampusconnect_http_request_duration_seconds_count{service="${serviceName}"} ${requestCount}\n`);
+}
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let raw = '';
@@ -16,6 +24,14 @@ function validProduct(product) { return typeof product.name === 'string' && prod
 
 http.createServer(async (req, res) => {
   const path = new URL(req.url, `http://${req.headers.host}`).pathname;
+  const started = process.hrtime.bigint();
+  res.once('finish', () => {
+    if (path === '/metrics') return;
+    requestCount += 1;
+    if (res.statusCode >= 400) errorCount += 1;
+    durationSeconds += Number(process.hrtime.bigint() - started) / 1e9;
+  });
+  if (req.method === 'GET' && path === '/metrics') return sendMetrics(res);
   const match = path.match(/^\/products(?:\/([^/]+))?$/);
   if (!match) return send(res, 404, { error: 'Route not found.' });
   const id = match[1];

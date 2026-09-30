@@ -9,8 +9,16 @@ const userServiceUrl = serviceUrl(process.env.USER_SERVICE_URL, 'http://localhos
 const productServiceUrl = serviceUrl(process.env.PRODUCT_SERVICE_URL, 'http://localhost:3002');
 let orders = [];
 let nextId = 1;
+const serviceName = 'order-service';
+let requestCount = 0;
+let errorCount = 0;
+let durationSeconds = 0;
 
 function send(res, status, body) { res.writeHead(status, { 'Content-Type': 'application/json' }); res.end(body === undefined ? '' : JSON.stringify(body)); }
+function sendMetrics(res) {
+  res.writeHead(200, { 'Content-Type': 'text/plain; version=0.0.4' });
+  res.end(`# HELP campusconnect_http_requests_total HTTP requests handled\n# TYPE campusconnect_http_requests_total counter\ncampusconnect_http_requests_total{service="${serviceName}"} ${requestCount}\n# HELP campusconnect_http_errors_total HTTP responses with status 400 or above\n# TYPE campusconnect_http_errors_total counter\ncampusconnect_http_errors_total{service="${serviceName}"} ${errorCount}\n# HELP campusconnect_http_request_duration_seconds Request duration\n# TYPE campusconnect_http_request_duration_seconds summary\ncampusconnect_http_request_duration_seconds_sum{service="${serviceName}"} ${durationSeconds}\ncampusconnect_http_request_duration_seconds_count{service="${serviceName}"} ${requestCount}\n`);
+}
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let raw = '';
@@ -27,6 +35,14 @@ async function fetchResource(serviceUrl, resource, id) {
 
 http.createServer(async (req, res) => {
   const path = new URL(req.url, `http://${req.headers.host}`).pathname;
+  const started = process.hrtime.bigint();
+  res.once('finish', () => {
+    if (path === '/metrics') return;
+    requestCount += 1;
+    if (res.statusCode >= 400) errorCount += 1;
+    durationSeconds += Number(process.hrtime.bigint() - started) / 1e9;
+  });
+  if (req.method === 'GET' && path === '/metrics') return sendMetrics(res);
   const match = path.match(/^\/orders(?:\/([^/]+))?$/);
   if (!match) return send(res, 404, { error: 'Route not found.' });
   const id = match[1];

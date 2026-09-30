@@ -12,3 +12,4 @@ Each lab is one gated phase. I will commit the completed phase and wait for revi
 Labs 7 and 8 are explicitly out of scope.
 
 7. **Phase 7 - Lab 7:** Scope expanded by user request. Add an API Gateway with configuration-based service discovery and cloud deployment guidance. **Complete locally - awaiting review and cloud account access.**
+8. **Phase 8 - Lab 8:** Deploy the Lab 7 services to Kubernetes, add basic CI, Prometheus metrics, and Grafana dashboard assets. **Complete locally - awaiting Kubernetes cluster and monitoring access.**
