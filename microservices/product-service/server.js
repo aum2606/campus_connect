@@ -1,6 +1,6 @@
 const http = require('node:http');
 
-const port = Number(process.env.PRODUCT_SERVICE_PORT) || 3002;
+const port = Number(process.env.PORT || process.env.PRODUCT_SERVICE_PORT) || 3002;
 let products = [{ id: '501', name: 'Campus Hoodie', price: 1299 }];
 let nextId = 502;
 

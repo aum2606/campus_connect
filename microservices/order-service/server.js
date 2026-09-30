@@ -1,6 +1,6 @@
 const http = require('node:http');
 
-const port = Number(process.env.ORDER_SERVICE_PORT) || 3003;
+const port = Number(process.env.PORT || process.env.ORDER_SERVICE_PORT) || 3003;
 function serviceUrl(value, fallback) {
   const url = value || fallback;
   return url.startsWith('http://') || url.startsWith('https://') ? url : `http://${url}`;

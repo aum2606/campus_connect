@@ -156,17 +156,17 @@ docker compose logs api-gateway
 
 An API Gateway gives clients one public entry point, hides internal service locations, and centralizes cross-cutting behavior such as logging and failure responses. Static configuration is simple and works for a small known deployment, but it needs a redeploy/restart when locations change. Dynamic discovery (such as Consul, Eureka, or Kubernetes DNS) can register instances automatically, track health, and route around failed or scaled instances.
 
-### Cloud deployment - Render
+### Cloud deployment - Render Free
 
-`render.yaml` is a Render Blueprint. It deploys the API Gateway as the only public web service and User, Product, and Order as Render private services in Singapore. It obtains each private service's internal `hostport` through Blueprint `fromService` references; the gateway code turns that value into an HTTP URL at runtime. No service address, credential, or public URL is committed.
+`render.yaml` deploys all four services as Render Free web services. This avoids the card requirement, but it is a demonstration setup: User, Product, and Order are public rather than private.
 
-1. Create a Render account and connect GitHub.
-2. In Render, select **New > Blueprint**, select this `campus_connect` repository and the `main` branch, then use `render.yaml`.
-3. Review the four services. The Gateway uses Render's Free plan; the three private services use the `0.5c-512mb` plan. Confirm the associated charges before applying.
-4. Apply the Blueprint and wait for all services to become live. Render supplies the gateway's public `onrender.com` URL; private services do not receive public URLs.
-5. Set the `gatewayUrl` Postman collection variable to `https://<gateway-name>.onrender.com`, then run `/health`, `/users`, `/products`, and `/orders`.
+1. In Render, select **New > Blueprint**, choose this repository and `main`, then apply `render.yaml`.
+2. Wait for the User, Product, and Order services to deploy. Copy their public `https://...onrender.com` URLs from the Render dashboard.
+3. In **campusconnect-order-service > Environment**, set `USER_SERVICE_URL` and `PRODUCT_SERVICE_URL` to the copied User and Product URLs. Save and manually redeploy Order Service.
+4. In **campusconnect-api-gateway > Environment**, set `USER_SERVICE_URL`, `PRODUCT_SERVICE_URL`, and `ORDER_SERVICE_URL` to the corresponding public service URLs. Save and manually redeploy the gateway.
+5. Copy the gateway's public URL into the Postman collection variable `gatewayUrl`, then run `/health`, `/users`, `/products`, and `/orders`.
 
-If you later add MongoDB Atlas persistence to every microservice, add each service's connection string in the Render dashboard as a secret environment variable - never commit it to `render.yaml`.
+Render supplies the `PORT` environment variable to each free web service; the service code now uses it automatically. Free web services can sleep after inactivity, so the first request can take about a minute. If you later add MongoDB Atlas persistence, add its connection string only in the Render dashboard as a secret environment variable.
 
 Compared with Lab 6, clients no longer need to know individual service ports. Operational concerns are collected at the gateway, while services stay private. Configuration makes endpoint locations replaceable without routing-code changes. Cloud deployment moves the public entry point beyond the local machine, which requires environment configuration and platform monitoring. The gateway makes client testing simpler, but its availability becomes important to the whole system.
 

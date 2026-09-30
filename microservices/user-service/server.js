@@ -1,6 +1,6 @@
 const http = require('node:http');
 
-const port = Number(process.env.USER_SERVICE_PORT) || 3001;
+const port = Number(process.env.PORT || process.env.USER_SERVICE_PORT) || 3001;
 let users = [{ id: '101', name: 'Aarav Patel', email: 'aarav@example.com' }];
 let nextId = 102;
 

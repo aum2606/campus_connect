@@ -11,6 +11,7 @@ http.createServer((request, response) => {
   if (request.method === 'GET' && path === '/health') return send(response, 200, { status: 'ok', service: 'api-gateway' });
   const target = serviceRegistry.find((service) => path === service.prefix || path.startsWith(`${service.prefix}/`));
   if (!target) return send(response, 404, { error: 'Gateway route not found.' });
+  if (!target.url) return send(response, 503, { error: `${target.name} URL is not configured.` });
   const targetUrl = new URL(request.url, target.url);
   const proxyRequest = http.request(targetUrl, { method: request.method, headers: { ...request.headers, host: targetUrl.host } }, (proxyResponse) => {
     response.writeHead(proxyResponse.statusCode, proxyResponse.headers);
